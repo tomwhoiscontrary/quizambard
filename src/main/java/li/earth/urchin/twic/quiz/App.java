@@ -4,6 +4,7 @@ import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import li.earth.urchin.twic.app.ExactPathFilter;
 import li.earth.urchin.twic.app.Logging;
 import li.earth.urchin.twic.app.LoggingFilter;
 import li.earth.urchin.twic.app.SimpleThreadFactory;
@@ -34,9 +35,10 @@ public class App {
 
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(port), 0);
         httpServer.setExecutor(Executors.newCachedThreadPool(new SimpleThreadFactory(HttpServer.class.getSimpleName())));
-        Filter loggingFilter = new LoggingFilter(Logging.getLogger(HttpServer.class));
+        Filter logging = new LoggingFilter(Logging.getLogger(HttpServer.class));
+        Filter exactPath = new ExactPathFilter();
 
-        createContext(httpServer, "/", StaticFileHandler.of(App.class, "index.html"), loggingFilter);
+        createContext(httpServer, "/", StaticFileHandler.of(App.class, "index.html"), logging, exactPath);
 
         httpServer.start();
         LOGGER.info("server started on {0}", httpServer.getAddress());
