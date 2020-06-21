@@ -37,22 +37,25 @@ public class LoggingFilter extends SelfDescribingFilter {
     }
 
     private void logReceived(HttpExchange http) {
-        logger.info("received request from {0} for {1}",
+        logger.info("received request from {0} for {1} {2}",
                     http.getRemoteAddress(),
+                    http.getRequestMethod(),
                     http.getRequestURI());
     }
 
     private void logError(String action, HttpExchange http, Exception e) {
-        logger.severe("error {0} request from {1} for {2}",
+        logger.severe("error {0} request from {1} for {2} {3}",
                       action,
                       http.getRemoteAddress(),
+                      http.getRequestMethod(),
                       http.getRequestURI(),
                       e);
     }
 
     private void logHandled(HttpExchange http) {
-        logger.info("handled request from {0} for {1} with {2}",
+        logger.info("handled request from {0} for {1} {2} with {3}",
                     http.getRemoteAddress(),
+                    http.getRequestMethod(),
                     http.getRequestURI(),
                     http.getResponseCode());
     }
