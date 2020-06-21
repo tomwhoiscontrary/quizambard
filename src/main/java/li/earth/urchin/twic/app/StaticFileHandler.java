@@ -17,10 +17,26 @@ public class StaticFileHandler {
         if (resource == null) throw new FileNotFoundException(name);
 
         return http -> {
+
+            boolean serveBody;
+            switch (http.getRequestMethod().toUpperCase()) {
+                case "GET":
+                    serveBody = true;
+                    break;
+                case "HEAD":
+                    serveBody = false;
+                    break;
+                default:
+                    http.sendResponseHeaders(HttpURLConnection.HTTP_BAD_METHOD, -1);
+                    return;
+            }
+
             URLConnection connection = resource.openConnection();
 
             http.getResponseHeaders().set("Content-Type", connection.getContentType());
             http.sendResponseHeaders(HttpURLConnection.HTTP_OK, connection.getContentLength());
+
+            if (!serveBody) return;
 
             try (InputStream in = connection.getInputStream()) {
                 try (OutputStream out = http.getResponseBody()) {
