@@ -1,22 +1,16 @@
 package li.earth.urchin.twic.app;
 
-import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class LoggingFilter extends Filter {
+public class LoggingFilter extends SelfDescribingFilter {
 
     private final Logging.Logger logger;
 
     public LoggingFilter(Logging.Logger logger) {
         this.logger = logger;
-    }
-
-    @Override
-    public String description() {
-        return getClass().getSimpleName();
     }
 
     @Override
