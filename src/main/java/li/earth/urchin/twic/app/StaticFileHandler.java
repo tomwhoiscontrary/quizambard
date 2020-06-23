@@ -17,7 +17,6 @@ public class StaticFileHandler {
         if (resource == null) throw new FileNotFoundException(name);
 
         return http -> {
-
             boolean serveBody;
             switch (http.getRequestMethod().toUpperCase()) {
                 case "GET":

@@ -1,7 +1,5 @@
 package li.earth.urchin.twic.app;
 
-import li.earth.urchin.twic.app.ExceptionParameterFilter;
-
 import java.io.FilterOutputStream;
 import java.io.OutputStream;
 import java.util.logging.Handler;
@@ -38,6 +36,7 @@ public class Logging {
             }
         };
         handler.setFilter(new ExceptionParameterFilter());
+        // TODO add a filter which tags a request ID onto the logger name with an @ if it finds one in a thread local
         java.util.logging.Logger.getLogger("").addHandler(handler);
 
         Thread.setDefaultUncaughtExceptionHandler((thread, e) -> mainLogger.severe("uncaught exception in thread {0}", thread.getName(), e));
