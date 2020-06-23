@@ -2,9 +2,7 @@ package li.earth.urchin.twic.app;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import li.earth.urchin.twic.quiz.App;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,13 +31,13 @@ public class FormHandler {
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String LOCATION = "Location";
 
-    public static HttpHandler of(Class<App> subjectClass,
+    public static HttpHandler of(Class<?> subjectClass,
                                  List<Function<String, Object>> urlParamParsers,
                                  String templateName,
                                  Function<List<Object>, List<Object>> getAction,
                                  BiFunction<List<Object>, Map<String, List<String>>, String> postAction) throws IOException {
         String templateSource;
-        try (InputStream templateResource = openResource(subjectClass, templateName)) {
+        try (InputStream templateResource = Resources.open(subjectClass, templateName)) {
             templateSource = readFully(templateResource);
         }
 
@@ -99,12 +97,6 @@ public class FormHandler {
                 sendRedirect(http, location);
             }
         };
-    }
-
-    private static InputStream openResource(Class<App> subjectClass, String name) throws FileNotFoundException {
-        InputStream resource = subjectClass.getResourceAsStream(name);
-        if (resource == null) throw new FileNotFoundException(name);
-        return resource;
     }
 
     private static String readFully(InputStream in) throws IOException {

@@ -1,7 +1,6 @@
 package li.earth.urchin.twic.app;
 
 import com.sun.net.httpserver.HttpHandler;
-import li.earth.urchin.twic.quiz.App;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -12,9 +11,8 @@ import java.net.URLConnection;
 
 public class StaticFileHandler {
 
-    public static HttpHandler of(Class<App> subjectClass, String name) throws FileNotFoundException {
-        URL resource = subjectClass.getResource(name);
-        if (resource == null) throw new FileNotFoundException(name);
+    public static HttpHandler of(Class<?> subjectClass, String name) throws FileNotFoundException {
+        URL resource = Resources.find(subjectClass, name);
 
         return http -> {
             boolean serveBody;
