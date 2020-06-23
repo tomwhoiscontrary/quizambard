@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import li.earth.urchin.twic.app.ExactPathFilter;
+import li.earth.urchin.twic.app.FormHandler;
 import li.earth.urchin.twic.app.Logging;
 import li.earth.urchin.twic.app.LoggingFilter;
 import li.earth.urchin.twic.app.SimpleThreadFactory;
@@ -13,6 +14,8 @@ import li.earth.urchin.twic.app.StaticFileHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 
 public class App {
@@ -39,6 +42,16 @@ public class App {
         Filter exactPath = new ExactPathFilter();
 
         createContext(httpServer, "/", StaticFileHandler.of(App.class, "index.html"), logging, exactPath);
+
+        createContext(httpServer,
+                      "/join",
+                      FormHandler.of(App.class, List.of(UUID::fromString),
+                                     "join.html",
+                                     urlParams -> List.of("a quiz with ID " + urlParams.get(0)),
+                                     (urlParams, formParams) -> "/play/" + urlParams.get(0)),
+                      logging);
+
+        createContext(httpServer, "/play", StaticFileHandler.of(App.class, "play.html"), logging);
 
         httpServer.start();
         LOGGER.info("server started on {0}", httpServer.getAddress());
