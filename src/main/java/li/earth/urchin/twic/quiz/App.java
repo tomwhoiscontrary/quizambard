@@ -45,7 +45,8 @@ public class App {
 
         createContext(httpServer,
                       "/join",
-                      FormHandler.of(App.class, List.of(UUID::fromString),
+                      FormHandler.of(App.class,
+                                     List.of(UUID::fromString),
                                      "join.html",
                                      urlParams -> List.of("a quiz with ID " + urlParams.get(0)),
                                      (urlParams, formParams) -> "/play/" + urlParams.get(0)),
