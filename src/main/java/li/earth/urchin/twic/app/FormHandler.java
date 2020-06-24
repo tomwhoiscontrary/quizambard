@@ -28,6 +28,7 @@ public class FormHandler {
 
     private static final Logging.Logger LOGGER = Logging.getLogger(FormHandler.class);
 
+    private static final Path EMPTY_PATH = Path.of("");
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String LOCATION = "Location";
 
@@ -66,13 +67,13 @@ public class FormHandler {
             }
             Path urlParamsPath = contextPath.relativize(path);
 
-            if (urlParamsPath.getNameCount() != urlParamParsers.size()) {
+            if (getNameCount(urlParamsPath) != urlParamParsers.size()) {
                 http.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, -1);
                 return;
             }
 
             List<Object> urlParams = parseUrlParameters(urlParamParsers, urlParamsPath);
-            if (urlParams.size() != urlParamsPath.getNameCount()) {
+            if (urlParams.size() != getNameCount(urlParamsPath)) {
                 http.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, -1);
                 return;
             }
@@ -99,6 +100,10 @@ public class FormHandler {
         };
     }
 
+    static int getNameCount(Path urlParamsPath) {
+        return urlParamsPath.equals(EMPTY_PATH) ? 0 : urlParamsPath.getNameCount();
+    }
+
     private static String readFully(InputStream in) throws IOException {
         return readFully(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
@@ -110,7 +115,7 @@ public class FormHandler {
     }
 
     static List<Object> parseUrlParameters(List<Function<String, Object>> parsers, Path urlParamsPath) {
-        return IntStream.range(0, urlParamsPath.getNameCount())
+        return IntStream.range(0, getNameCount(urlParamsPath))
                         .boxed()
                         .flatMap(i -> {
                             String paramString = urlParamsPath.getName(i).toString();
