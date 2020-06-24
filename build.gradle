@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation 'com.zaxxer:HikariCP:3.4.5'
+    implementation 'com.samskivert:jmustache:1.15'
 
     runtimeOnly 'com.h2database:h2:1.4.200'
     runtimeOnly 'org.slf4j:slf4j-jdk14:1.7.30'

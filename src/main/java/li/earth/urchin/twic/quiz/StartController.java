@@ -31,7 +31,7 @@ class StartController {
         this.db = db;
     }
 
-    List<Object> get(List<Object> urlParams) {
+    Map<String, Object> get(List<Object> urlParams) {
         SortedSet<Quiz> quizzes = new TreeSet<>();
 
         try {
@@ -69,7 +69,7 @@ class StartController {
             quiz.games.forEach((id, started) -> buf.append(" ").append(started.atZone(ZoneId.systemDefault())).append(" (").append(id).append(")\n"));
         });
 
-        return List.of(buf.toString());
+        return Map.of("quizzes", buf.toString());
     }
 
     String post(List<Object> urlParams, Map<String, List<String>> formParams) {

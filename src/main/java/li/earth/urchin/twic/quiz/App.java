@@ -21,6 +21,7 @@ import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -79,7 +80,7 @@ public class App {
                       FormHandler.of(App.class,
                                      List.of(UUID::fromString),
                                      "join.html",
-                                     urlParams -> List.of("a quiz with ID " + urlParams.get(0)),
+                                     urlParams -> Map.of("name", "a quiz with ID " + urlParams.get(0)),
                                      (urlParams, formParams) -> "/play/" + urlParams.get(0)),
                       logging);
 

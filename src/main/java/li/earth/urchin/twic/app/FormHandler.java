@@ -1,5 +1,7 @@
 package li.earth.urchin.twic.app;
 
+import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Template;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -14,7 +16,6 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -35,14 +36,12 @@ public class FormHandler {
     public static HttpHandler of(Class<?> subjectClass,
                                  List<Function<String, Object>> urlParamParsers,
                                  String templateName,
-                                 Function<List<Object>, List<Object>> getAction,
+                                 Function<List<Object>, Map<String, Object>> getAction,
                                  BiFunction<List<Object>, Map<String, List<String>>, String> postAction) throws IOException {
-        String templateSource;
+        Template template;
         try (InputStream templateResource = Resources.open(subjectClass, templateName)) {
-            templateSource = readFully(templateResource);
+            template = Mustache.compiler().compile(new InputStreamReader(templateResource, StandardCharsets.UTF_8));
         }
-
-        MessageFormat template = new MessageFormat(templateSource);
 
         return http -> {
             boolean get;
@@ -79,9 +78,9 @@ public class FormHandler {
             }
 
             if (get) {
-                List<Object> templateParams = getAction.apply(urlParams);
+                Map<String, Object> templateParams = getAction.apply(urlParams);
 
-                String content = template.format(templateParams.toArray(Object[]::new));
+                String content = template.execute(templateParams);
 
                 sendContent(http, "text/html", content);
             } else {
