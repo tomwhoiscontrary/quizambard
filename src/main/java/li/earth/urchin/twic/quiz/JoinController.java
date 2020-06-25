@@ -60,9 +60,31 @@ class JoinController {
 
         String playerName = formParams.get("name").get(0);
 
-        LOGGER.info("player {0} joined game {1}", playerName, gameId);
+        String playerId;
+        try {
+            try (Connection connection = db.getConnection()) {
+                // need to have a when matched arm to get a row in the final table, so make a no-op update :(
+                try (PreparedStatement stmt = connection.prepareStatement("select quiz_game_player_id from final table (merge into quiz_game_player using dual on quiz_game_id = ?2 and name = ?3 when not matched then insert (quiz_game_player_id, quiz_game_id, name) values (?1, ?2, ?3) when matched then update set name = ?3)")) {
+                    stmt.setString(1, UUID.randomUUID().toString());
+                    stmt.setString(2, gameId.toString());
+                    stmt.setString(3, playerName);
 
-        return "/play/" + gameId;
+                    ResultSet results = stmt.executeQuery();
+
+                    if (!results.next()) throw new SQLException("not found");
+
+                    playerId = results.getString("quiz_game_player_id");
+
+                    if (results.next()) throw new SQLException("more than one result found");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        LOGGER.info("player {0} (re)joined game {1} as {2}", playerName, gameId, playerId);
+
+        return "/play/" + playerId;
     }
 
 }

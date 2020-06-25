@@ -10,3 +10,11 @@ create table quiz_game (
 
 	foreign key (quiz_id) references quiz
 );
+
+create table quiz_game_player (
+	quiz_game_player_id uuid primary key,
+	quiz_game_id uuid not null,
+	name varchar not null,
+
+	foreign key (quiz_game_id) references quiz_game
+);
