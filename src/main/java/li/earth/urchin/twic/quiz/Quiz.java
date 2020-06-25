@@ -3,6 +3,7 @@ package li.earth.urchin.twic.quiz;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 class Quiz implements Comparable<Quiz> {
@@ -15,6 +16,10 @@ class Quiz implements Comparable<Quiz> {
         this.id = id;
         this.name = name;
         this.games = games;
+    }
+
+    public Set<Map.Entry<UUID, Instant>> getGames() {
+        return games.entrySet();
     }
 
     @Override

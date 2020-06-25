@@ -8,12 +8,22 @@
 
 <body>
 
-<pre>{{quizzes}}</pre>
-
-<form action="" method="post">
-    <label>Quiz ID <input type="text" name="id"></label>
-    <input type="submit" value="Start">
-</form>
+<ul>
+    {{#quizzes}}
+    <li>
+        <form action="" method="post">
+            {{name}} ({{id}})
+            <input type="hidden" name="id" value="{{id}}">
+            <input type="submit" value="Start">
+        </form>
+        <ul>
+            {{#games}}
+            <li>{{value}} ({{key}})</li>
+            {{/games}}
+        </ul>
+    </li>
+    {{/quizzes}}
+</ul>
 
 </body>
 

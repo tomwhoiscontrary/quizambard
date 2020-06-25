@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -63,13 +62,7 @@ class StartController {
             throw new RuntimeException(e); // TODO replace the functions with interfaces which can throw!
         }
 
-        StringBuilder buf = new StringBuilder();
-        quizzes.forEach(quiz -> {
-            buf.append(quiz.name).append(" (").append(quiz.id).append(")\n");
-            quiz.games.forEach((id, started) -> buf.append(" ").append(started.atZone(ZoneId.systemDefault())).append(" (").append(id).append(")\n"));
-        });
-
-        return Map.of("quizzes", buf.toString());
+        return Map.of("quizzes", quizzes);
     }
 
     String post(List<Object> urlParams, Map<String, List<String>> formParams) {
